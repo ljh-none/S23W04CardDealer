@@ -12,9 +12,49 @@
         android:id="@+id/card1"
         android:layout_width="100dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/card3"
+        app:layout_constraintEnd_toStartOf="@+id/card2"
+        app:layout_constraintStart_toEndOf="@+id/card4"
+        app:layout_constraintTop_toBottomOf="@+id/card5" />
+
+    <ImageView
+        android:id="@+id/card2"
+        android:layout_width="100dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toEndOf="@+id/card1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+/>
+
+    <ImageView
+        android:id="@+id/card3"
+        android:layout_width="100dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/card1"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <ImageView
+        android:id="@+id/card4"
+        android:layout_width="100dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/card1"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <ImageView
+        android:id="@+id/card5"
+        android:layout_width="100dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/card1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

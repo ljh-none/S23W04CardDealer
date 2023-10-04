@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
         main=ActivityMainBinding.inflate(layoutInflater)
         setContentView(main.root)
 
+        //TODO:하드코딩 없앨 것
         val card=Random.nextInt(52)
         val res=resources.getIdentifier(
             getCardNumber(card),
@@ -21,10 +22,15 @@ class MainActivity : AppCompatActivity() {
             packageName
         )
         main.card1.setImageResource(res)
+        main.card2?.setImageResource(res)
+        main.card3?.setImageResource(res)
+        main.card4?.setImageResource(res)
+        main.card5?.setImageResource(res)
+
     }
 
     private fun getCardNumber(c : Int):String{
-        val shape = when (c/13){
+        var shape = when (c/13){
             0->"spades"
             1->"diamonds"
             2->"hearts"
@@ -38,6 +44,10 @@ class MainActivity : AppCompatActivity() {
             11->"queen"
             12->"king"
             else->"error"
+        }
+
+        if(num=="Jack" || num=="queen" || num=="king"){
+            shape="${shape}2"
         }
         return "c_${num}_of_${shape}"
     }
