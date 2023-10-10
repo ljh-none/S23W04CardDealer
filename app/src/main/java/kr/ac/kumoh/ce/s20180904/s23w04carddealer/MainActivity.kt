@@ -3,33 +3,49 @@ package kr.ac.kumoh.ce.s20180904.s23w04carddealer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import kr.ac.kumoh.ce.s20180904.s23w04carddealer.databinding.ActivityMainBinding
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
     private lateinit var main : ActivityMainBinding
+    private lateinit var model: CardViewModel
+    private lateinit var card_list: Array<ImageView?>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i("Lifecycle!!!", "onCreate")
         //setContentView(R.layout.activity_main)
         main=ActivityMainBinding.inflate(layoutInflater)
         setContentView(main.root)
 
-        //TODO:하드코딩 없앨 것
-        val card=Random.nextInt(52)
-        val res=resources.getIdentifier(
-            getCardNumber(card),
-            "drawable",
-            packageName
-        )
-        main.card1.setImageResource(res)
-        main.card2?.setImageResource(res)
-        main.card3?.setImageResource(res)
-        main.card4?.setImageResource(res)
-        main.card5?.setImageResource(res)
+        card_list=arrayOf(main.card1, main.card2, main.card3, main.card4, main.card5)
 
+        model= ViewModelProvider(this)[CardViewModel::class.java]
+
+        model.cards.observe(this, Observer { SetCard() })
+
+        main.card1.setOnClickListener{
+            model.generateCard()
+        }
     }
 
-    private fun getCardNumber(c : Int):String{
+    private fun SetCard(){
+        var temp = 0
+        for(i in 0 until 5){
+            temp=model.cards.value!![i]
+            val res = resources.getIdentifier(
+                getCardName(temp),
+                "drawable",
+                packageName
+            )
+            card_list[i]?.setImageResource((res))
+        }
+    }
+
+    private fun getCardName(c : Int): String{
         var shape = when (c/13){
             0->"spades"
             1->"diamonds"
@@ -51,6 +67,29 @@ class MainActivity : AppCompatActivity() {
         }
         return "c_${num}_of_${shape}"
     }
-
+    override fun onStart() {
+        super.onStart()
+        Log.i("Lifecycle!!!", "onStart")
+    }
+    override fun onResume() {
+        super.onResume()
+        Log.i("Lifecycle!!!", "onResume")
+    }
+    override fun onPause() {
+        super.onPause()
+        Log.i("Lifecycle!!!", "onPause")
+    }
+    override fun onStop() {
+        super.onStop()
+        Log.i("Lifecycle!!!", "onStop")
+    }
+    override fun onRestart() {
+        super.onRestart()
+        Log.i("Lifecycle!!!", "onRestart")
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i("Lifecycle!!!", "onDestroy")
+    }
 }
 

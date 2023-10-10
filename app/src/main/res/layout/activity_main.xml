@@ -15,7 +15,9 @@
         app:layout_constraintBottom_toTopOf="@+id/card3"
         app:layout_constraintEnd_toStartOf="@+id/card2"
         app:layout_constraintStart_toEndOf="@+id/card4"
-        app:layout_constraintTop_toBottomOf="@+id/card5" />
+        app:layout_constraintTop_toBottomOf="@+id/card5"
+        android:clickable="true"
+        />
 
     <ImageView
         android:id="@+id/card2"
