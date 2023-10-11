@@ -15,8 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/card2"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@id/btn_shuffle"
         />
 
     <!-- 두 번째 ImageView -->
@@ -26,8 +25,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/card1"
         app:layout_constraintEnd_toStartOf="@id/card3"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/card1"
+        app:layout_constraintBottom_toTopOf="@id/btn_shuffle" />
 
     <!-- 세 번째 ImageView -->
     <ImageView
@@ -36,8 +35,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/card2"
         app:layout_constraintEnd_toStartOf="@id/card4"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/card1"
+        app:layout_constraintBottom_toTopOf="@id/btn_shuffle" />
 
     <ImageView
         android:id="@+id/card4"
@@ -45,8 +44,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/card3"
         app:layout_constraintEnd_toStartOf="@id/card5"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/card1"
+        app:layout_constraintBottom_toTopOf="@id/btn_shuffle" />
 
     <ImageView
         android:id="@+id/card5"
@@ -54,7 +53,18 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/card4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/card1"
+        app:layout_constraintBottom_toTopOf="@id/btn_shuffle" />
+
+    <Button
+        android:id="@+id/btn_shuffle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="good luck"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card1"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

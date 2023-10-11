@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         model.cards.observe(this, Observer { SetCard() })
 
-        main.card1.setOnClickListener{
+        main.btnShuffle.setOnClickListener{
             model.generateCard()
         }
     }
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                 "drawable",
                 packageName
             )
-            card_list[i]?.setImageResource((res))
+            card_list[i]?.setImageResource(res)
         }
     }
 

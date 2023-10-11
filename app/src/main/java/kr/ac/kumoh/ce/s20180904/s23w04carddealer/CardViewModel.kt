@@ -9,18 +9,17 @@ import androidx.lifecycle.MutableLiveData
 
 class CardViewModel : ViewModel() {
     private var _cards=MutableLiveData<IntArray>(IntArray(5){0})
-    val cards: LiveData<IntArray> //value numbers 는 liveData<IntArray>타입
+    val cards: LiveData<IntArray>
         get() = _cards
     fun generateCard(){
         var temp = 0
         var tempCard = IntArray(5){0}
         for (i in tempCard.indices) {
             do {
-                temp = Random.nextInt(1, 46)
+                temp = Random.nextInt(0, 52)
             } while (tempCard.contains(temp))
             tempCard[i] = temp
         }
-
         _cards.value=tempCard
     }
 }
