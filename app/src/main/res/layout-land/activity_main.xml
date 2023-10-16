@@ -12,10 +12,13 @@
         android:id="@+id/card1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/card2"
+
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btn_shuffle"
+        app:layout_constraintBottom_toTopOf="@id/text"
         />
 
     <!-- 두 번째 ImageView -->
@@ -25,8 +28,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/card1"
         app:layout_constraintEnd_toStartOf="@id/card3"
+
         app:layout_constraintTop_toTopOf="@+id/card1"
-        app:layout_constraintBottom_toTopOf="@id/btn_shuffle" />
+        app:layout_constraintBottom_toBottomOf="@id/card1" />
 
     <!-- 세 번째 ImageView -->
     <ImageView
@@ -35,8 +39,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/card2"
         app:layout_constraintEnd_toStartOf="@id/card4"
+
         app:layout_constraintTop_toTopOf="@+id/card1"
-        app:layout_constraintBottom_toTopOf="@id/btn_shuffle" />
+        app:layout_constraintBottom_toBottomOf="@id/card1" />
 
     <ImageView
         android:id="@+id/card4"
@@ -44,8 +49,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/card3"
         app:layout_constraintEnd_toStartOf="@id/card5"
+
         app:layout_constraintTop_toTopOf="@+id/card1"
-        app:layout_constraintBottom_toTopOf="@id/btn_shuffle" />
+        app:layout_constraintBottom_toBottomOf="@id/card1" />
 
     <ImageView
         android:id="@+id/card5"
@@ -53,18 +59,36 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/card4"
         app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintTop_toTopOf="@+id/card1"
-        app:layout_constraintBottom_toTopOf="@id/btn_shuffle" />
+        app:layout_constraintBottom_toBottomOf="@id/card1" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:text="족보"
+        android:textSize="20dp"
+        android:textAlignment="center"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@+id/card1"
+        app:layout_constraintBottom_toTopOf="@id/btn_shuffle"
+        />
 
     <Button
         android:id="@+id/btn_shuffle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="good luck"
+        android:layout_marginBottom="80dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card1"
+        app:layout_constraintTop_toBottomOf="@id/text"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
