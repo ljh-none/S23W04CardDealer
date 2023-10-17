@@ -24,12 +24,12 @@ class MainActivity : AppCompatActivity() {
         model= ViewModelProvider(this)[CardViewModel::class.java]
 
         model.cards.observe(this, Observer { SetCard() })
+        model.ranks.observe(this,{main.text.text=model.ranks.value!!})
 
         main.btnShuffle.setOnClickListener{
             Log.i("Lifecycle!!!", "ButtonClicked")
             model.generateCard()
             Log.i("Lifecycle!!!", "generated")
-            main.text.text=model.judgeCard()
             Log.i("Lifecycle!!!", "Judged")
         }
     }

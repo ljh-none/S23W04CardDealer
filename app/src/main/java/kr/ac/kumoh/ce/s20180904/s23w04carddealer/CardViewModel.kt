@@ -22,10 +22,12 @@ val ROYAL_FLUSH = 10
 
 class CardViewModel : ViewModel() {
     private var _cards=MutableLiveData<IntArray>(IntArray(5){-1})
-    private var _rank =""   //회전해도 족보 출력되도록
+    private var _ranks = MutableLiveData<String>("족보") //족보값 저장
     val cards: LiveData<IntArray>
         get() = _cards
-   
+   val ranks : LiveData<String>
+       get() = _ranks
+
     fun generateCard(){
         var temp = 0
         var tempCard = IntArray(5){0}
@@ -36,42 +38,31 @@ class CardViewModel : ViewModel() {
             tempCard[i] = temp
         }
         _cards.value=tempCard
+        judgeCard()
     }
 
-    fun judgeCard() : String {
+    fun judgeCard(){
         val overlap = _cards.value!!.copyOf()
         val another = _cards.value!!.copyOf()
         var result = 0
 
-        Log.i("MyCal", "judge state - ${overlap[0]}")
-        Log.i("MyCal", "judge state - ${overlap[1]}")
-        Log.i("MyCal", "judge state - ${overlap[2]}")
-        Log.i("MyCal", "judge state - ${overlap[3]}")
-        Log.i("MyCal", "judge state - ${overlap[4]}")
         result=isOverlap(overlap)
-        Log.i("MyCal", "after Overlap - ${another[0]}")
-        Log.i("MyCal", "after Overlap - ${another[1]}")
-        Log.i("MyCal", "after Overlap - ${another[2]}")
-        Log.i("MyCal", "after Overlap - ${another[3]}")
-        Log.i("MyCal", "after Overlap - ${another[4]}")
-        Log.i("MyCal", "result - ${result}")
         if(result == 0){
             //로플, 스플, 플, 스트, 하이 판단
             result=isAnother(another)
         }
-        Log.i("MyLog", "LogLogLogLogLogLogLogLog")
         when(result){
-            HIGH -> return "하이카드"
-            ONE_PAIR -> return "원 페어"
-            TWO_PAIR -> return "투 페어"
-            TRIPLE -> return "트리플"
-            STRAIGHT -> return "스트레이트"
-            FLUSH -> return "플러시"
-            FULL_H -> return "풀 하우스"
-            FOUR_CARD -> return "포 카드"
-            ST_FLUSH -> return "스트레이트 플러시"
-            ROYAL_FLUSH -> return "!!로얄 플러시!!"
-            else -> return "error"
+            HIGH -> _ranks.value = "하이카드"
+            ONE_PAIR -> _ranks.value = "원 페어"
+            TWO_PAIR -> _ranks.value = "투 페어"
+            TRIPLE -> _ranks.value = "트리플"
+            STRAIGHT -> _ranks.value = "스트레이트"
+            FLUSH -> _ranks.value = "플러시"
+            FULL_H -> _ranks.value = "풀 하우스"
+            FOUR_CARD -> _ranks.value = "포 카드"
+            ST_FLUSH -> _ranks.value = "스트레이트 플러시"
+            ROYAL_FLUSH -> _ranks.value = "!!로얄 플러시!!"
+            else -> _ranks.value = "error"
         }
     }
     private fun isOverlap(temp : IntArray) : Int{
