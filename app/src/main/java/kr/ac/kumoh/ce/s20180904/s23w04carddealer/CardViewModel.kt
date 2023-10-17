@@ -31,7 +31,7 @@ class CardViewModel : ViewModel() {
     fun generateCard(){ //5장 생성 후 족보 판단 함수 추가
         var temp = 0
 //        var tempCard = intArrayOf(51, 50, 49, 48, 47) //로플검증
-//        var tempCard = intArrayOf(26, 27, 36, 37, 38) //스플검증
+       var tempCard = intArrayOf(26, 27, 36, 37, 38) //스플검증
 //        var tempCard = intArrayOf(5, 3, 16, 29, 42) //포카검증
 //        var tempCard = intArrayOf(5, 18, 31, 6, 19) //풀하검증
 //        var tempCard = intArrayOf(40, 42, 44, 45, 50) //플러검즏
@@ -103,7 +103,6 @@ class CardViewModel : ViewModel() {
         else
             return HIGH
     }
-
     private fun sameShape(temp : IntArray) : Int {  //같은 문양 검사 함수
         var count = 0
         for(i in 0..4)  temp[i] = temp[i]/13    //문양 판별. 0~3
@@ -114,54 +113,25 @@ class CardViewModel : ViewModel() {
         return 0
     }
     private fun isStraight(temp : IntArray) : Int{
-        /**
-         * 13모듈러 -> 카드 숫자가 나옴
-         * ace 2 3 q k
-         *  0 1 2 11 12
-         *3
-         *  0 9 10 11 12
-         *  3
-         *  0 1 2 3 12
-         *
-         *  1 2 3 4 5
-         *
-         * ace와 k를 이으려면..
-         *
-         *
-         */
         var straight = Normalization(13, temp)
         var count = 0
         straight.sort()
-        Log.i("MyLog","straight nor${straight[0]}")
-        Log.i("MyLog","straight nor${straight[1]}")
-        Log.i("MyLog","straight nor${straight[2]}")
-        Log.i("MyLog","straight nor${straight[3]}")
-        Log.i("MyLog","straight nor${straight[4]}")
 
-        Log.i("MyLog", "Before count = ${count}")
-        if(straight[0] == 0 && straight[4] == 12){  //ace와 king이 붙어있을 떄
-            for(i in 0..3){    //순전파
-                if(straight[i+1] - straight[i] == 1) {
-                    count += 1
-                    Log.i("MyLog", " 순 +1 = ${count} - i = ${i}")
-                }
-                else break;
+        if(straight[0] == 0 && straight[4] == 12){  //ace와 king이 붙어있을 때
+            for(i in 0..3){ //순전파
+                if(straight[i+1] - straight[i] == 1) count += 1
+                else break
             }
             for(i in 4 downTo 1){   //역전파
-                if(straight[i] - straight[i - 1] == 1) {
-                    count += 1
-                    Log.i("MyLog", " 역 +1 = ${count}")
-                }
-                else break;
+                if(straight[i] - straight[i - 1] == 1) count += 1
+                else break
             }
-            Log.i("MyLog","After count = ${count}")
             if(count == 3) return 1
         }
-        else{
-            for(i in 0..3){    //순전파
+        else{   //ace와 킹이 붙어있지 않을 때
+            for(i in 0..3){
                 if(straight[i+1] - straight[i] == 1) {
                     count += 1
-                    Log.i("MyLog", " +1 = ${count}")
                 }
             }
             if(count == 4) return 1
