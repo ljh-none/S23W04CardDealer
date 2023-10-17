@@ -22,34 +22,36 @@ val ROYAL_FLUSH = 10
 
 class CardViewModel : ViewModel() {
     private var _cards=MutableLiveData<IntArray>(IntArray(5){-1})
-    private var _ranks = MutableLiveData<String>("족보") //족보값 저장
+    private var _ranks = MutableLiveData<String>("족보") //족보값 유지용
     val cards: LiveData<IntArray>
         get() = _cards
    val ranks : LiveData<String>
        get() = _ranks
 
-    fun generateCard(){
+    fun generateCard(){ //5장 생성 후 족보 판단 함수 추가
         var temp = 0
-        var tempCard = IntArray(5){0}
-        for (i in tempCard.indices) {
-            do {
-                temp = Random.nextInt(0, 52)
-            } while (tempCard.contains(temp))
-            tempCard[i] = temp
-        }
+//        var tempCard = intArrayOf(51, 50, 49, 48, 47) //로플검증
+//        var tempCard = intArrayOf(26, 27, 36, 37, 38) //스플검증
+//        var tempCard = intArrayOf(5, 3, 16, 29, 42) //포카검증
+//        var tempCard = intArrayOf(5, 18, 31, 6, 19) //풀하검증
+//        var tempCard = intArrayOf(40, 42, 44, 45, 50) //플러검즏
+//        var tempCard = intArrayOf(15, 29, 4, 31, 32)   //스트검증
+
+//        var tempCard = IntArray(5){0}
+//        for (i in tempCard.indices) {
+//            do {
+//                temp = Random.nextInt(0, 52)
+//            } while (tempCard.contains(temp))
+//            tempCard[i] = temp
+//        }
         _cards.value=tempCard
-        judgeCard()
+        judgeCard() //족보 판단 함수
     }
 
-    fun judgeCard(){
-        val overlap = _cards.value!!.copyOf()
-        val another = _cards.value!!.copyOf()
-        var result = 0
-
-        result=isOverlap(overlap)
+    private fun judgeCard(){    //족보 판단 함수
+        var result = isOverlap()   //숫자 중복 족보 검사 함수
         if(result == 0){
-            //로플, 스플, 플, 스트, 하이 판단
-            result=isAnother(another)
+            result=isAnother()   //나머지 족보 판별 함수
         }
         when(result){
             HIGH -> _ranks.value = "하이카드"
@@ -65,35 +67,32 @@ class CardViewModel : ViewModel() {
             else -> _ranks.value = "error"
         }
     }
-    private fun isOverlap(temp : IntArray) : Int{
+    private fun isOverlap() : Int{   //숫자 중복 족보 검사 함수
         var count = 0
-        var temp = Normalization(13,temp);    //13으로 모듈러 정규화
+        val temp = Normalization(13,_cards.value!!.copyOf())    //13으로 모듈러 정규화 -> 카드숫자값 추출
 
         var n = 0 //임시변수
-        for(i in 0..12) {    //각 숫자에 대한 중복검사
+        for(i in 0..12) {    //각 숫자(ace~king)에 대한 중복검사
             n = temp.count { it == i }
-            if (n == 4) {   //투페랑 포카는 최종 카운트가 4로 겹침. 그래서 넣은 조건문
-                return FOUR_CARD
-            } else if (n != 1) {    //중복 아닌 요소는 기록하지 않음
-                count += n
-            }
+            if (n == 4) return FOUR_CARD    //포카드와 투페어는 최종 카운트가 4로 겹침.
+            if (n != 1) count += n  //중복이 아닌 요소는 카운트하지 않음.
         }
         when(count){
             2 -> return ONE_PAIR
             3 -> return TRIPLE
-            4 -> return TWO_PAIR
+            4 -> return TWO_PAIR    //n=2+2가 투페어. 4+0은 위에서 아예 리턴시킴.
             5 -> return FULL_H
-            else -> return 0
+            else -> return 0    //아무것도 해당하지 않을 때
         }
     }
-    private fun isAnother(temp : IntArray) : Int{
-        var shape = sameShape(temp)
-        var straight = isStraight(temp)
+    private fun isAnother() : Int{   //나머지 족보 판별 함수
+        var shape = sameShape(_cards.value!!.copyOf()) //같은 문양 검사
+        var straight = isStraight(_cards.value!!.copyOf()) //숫자 연속성 검사
 
         if(shape == 1 && straight == 1){
-            val temp=Normalization(13,temp);
-            if(temp.sum()==42) return ROYAL_FLUSH;
-            else return ST_FLUSH
+            val temp=Normalization(13,_cards.value!!.copyOf())
+            if(temp.sum()==42) return ROYAL_FLUSH
+            return ST_FLUSH
         }
         else if(shape == 0 && straight == 1){
             return STRAIGHT
@@ -105,40 +104,75 @@ class CardViewModel : ViewModel() {
             return HIGH
     }
 
-    private fun sameShape(temp : IntArray) : Int {
+    private fun sameShape(temp : IntArray) : Int {  //같은 문양 검사 함수
         var count = 0
-        var shape = temp
-
-        for(i in 0..4){     //나누기 연산으로 정규화. 0~3
-            count += shape[i]/13
-            Log.i("MyCal", "${i} - ${shape[i]} - ${shape[i]/13}")
+        for(i in 0..4)  temp[i] = temp[i]/13    //문양 판별. 0~3
+        for(i in 0..4) {
+            count=temp.count{ it == i } //중복검사
+            if(count == 5) return 1 //카운트가 5면 같은요소가 5개있다 -> 모두 같은 문양
         }
-
-        for(i in 0..4) {    //각 숫자에 대한 중복검사
-            count=shape.count { it == i }
-        }
-
-        if(count == 5) return 1
-        else return 0
+        return 0
     }
     private fun isStraight(temp : IntArray) : Int{
-        var straight = Normalization(13, temp);
-        var min = straight.min()
+        /**
+         * 13모듈러 -> 카드 숫자가 나옴
+         * ace 2 3 q k
+         *  0 1 2 11 12
+         *3
+         *  0 9 10 11 12
+         *  3
+         *  0 1 2 3 12
+         *
+         *  1 2 3 4 5
+         *
+         * ace와 k를 이으려면..
+         *
+         *
+         */
+        var straight = Normalization(13, temp)
+        var count = 0
+        straight.sort()
+        Log.i("MyLog","straight nor${straight[0]}")
+        Log.i("MyLog","straight nor${straight[1]}")
+        Log.i("MyLog","straight nor${straight[2]}")
+        Log.i("MyLog","straight nor${straight[3]}")
+        Log.i("MyLog","straight nor${straight[4]}")
 
-        straight=Normalization(min, straight);
-
-        //최솟값으로 모듈러 연산을 한 값을 모두 더했을 때, 10이 나오면 스트레이트
-        if(straight.sum()==10) {
-            return 1;
+        Log.i("MyLog", "Before count = ${count}")
+        if(straight[0] == 0 && straight[4] == 12){  //ace와 king이 붙어있을 떄
+            for(i in 0..3){    //순전파
+                if(straight[i+1] - straight[i] == 1) {
+                    count += 1
+                    Log.i("MyLog", " 순 +1 = ${count} - i = ${i}")
+                }
+                else break;
+            }
+            for(i in 4 downTo 1){   //역전파
+                if(straight[i] - straight[i - 1] == 1) {
+                    count += 1
+                    Log.i("MyLog", " 역 +1 = ${count}")
+                }
+                else break;
+            }
+            Log.i("MyLog","After count = ${count}")
+            if(count == 3) return 1
         }
-        else return 0
+        else{
+            for(i in 0..3){    //순전파
+                if(straight[i+1] - straight[i] == 1) {
+                    count += 1
+                    Log.i("MyLog", " +1 = ${count}")
+                }
+            }
+            if(count == 4) return 1
+        }
+        return 0
     }
 
     private fun Normalization(divisor : Int, temp : IntArray) : IntArray{
-        var normal=temp
-        for(i in 0..(normal.size-1)){
-            normal[i]=normal[i]%divisor
+        for(i in 0..(temp.size-1)){
+            temp[i]=temp[i]%divisor
         }
-        return normal
+        return temp
     }
 }

@@ -22,15 +22,11 @@ class MainActivity : AppCompatActivity() {
         card_list=arrayOf(main.card1, main.card2, main.card3, main.card4, main.card5)
 
         model= ViewModelProvider(this)[CardViewModel::class.java]
-
         model.cards.observe(this, Observer { SetCard() })
-        model.ranks.observe(this,{main.text.text=model.ranks.value!!})
+        model.ranks.observe(this,{main.text.text=model.ranks.value!!})  //화면 회전 시 족보 유지
 
         main.btnShuffle.setOnClickListener{
-            Log.i("Lifecycle!!!", "ButtonClicked")
             model.generateCard()
-            Log.i("Lifecycle!!!", "generated")
-            Log.i("Lifecycle!!!", "Judged")
         }
     }
 
@@ -72,7 +68,6 @@ class MainActivity : AppCompatActivity() {
         else
             return "c_${num}_of_${shape}"
     }
-
     override fun onStart() {
         super.onStart()
         Log.i("Lifecycle!!!", "onStart")
