@@ -1,5 +1,6 @@
 package kr.ac.kumoh.ce.s20180904.s23w04carddealer
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -27,6 +28,10 @@ class MainActivity : AppCompatActivity() {
 
         main.btnShuffle.setOnClickListener{
             model.generateCard()
+        }
+        main.btnRate.setOnClickListener{
+            var intent= Intent(this, SecondActivity::class.java)
+            startActivity(intent)
         }
     }
 
