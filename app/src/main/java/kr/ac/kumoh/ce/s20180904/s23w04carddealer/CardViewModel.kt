@@ -26,12 +26,19 @@ class CardViewModel : ViewModel() {
     private var _cards=MutableLiveData<IntArray>(IntArray(5){-1})
     private var _ranks = MutableLiveData<String>("족보") //족보값 유지용
     private var _probability= MutableLiveData<DoubleArray>(DoubleArray(13){0.0})
+    private var _times = MutableLiveData<Int>(0)
     val cards: LiveData<IntArray>
         get() = _cards
    val ranks : LiveData<String>
        get() = _ranks
     val probability :LiveData<DoubleArray>
         get() = _probability
+    var times : MutableLiveData<Int>
+        get() = _times
+        set(value){
+            _times.value = value.value
+        }
+
     fun generateCard(){ //기존 5장 생성 기능에 족보 판단 함수 추가
 //        이하 주석은 검증용 카드
 //        var tempCard = intArrayOf(51, 50, 49, 48, 47) //로플검증
@@ -52,21 +59,24 @@ class CardViewModel : ViewModel() {
         judgeCard(_cards.value!!.copyOf(),_cards.value!!.copyOf()) //족보 판단 함수
     }
 
-    fun simulate(i : Int){
+    fun simulate(){
         Log.i("ErrorLog??", "init simulate")
         var ary=IntArray(13){0}
         var tempCard = IntArray(5){0}
         var temp : Int
 
-        for (j in 1..i){
+        for (j in 1.._times.value!!){
             for (i in tempCard.indices) {
                 do {
                     temp = Random.nextInt(0, 52)
                 } while (tempCard.contains(temp))
                 tempCard[i] = temp
             }
-            when(judgeCard(tempCard,tempCard)){
-                HIGH -> ary[0]++
+            Log.i("ErrorLog??", "aaa${tempCard[2]}")
+//            temp_1=judgeCard(tempCard.copyOf(),tempCard.copyOf())
+//            Log.i("ErrorLog??", "aaa${temp_1}")
+            when(judgeCard(tempCard.copyOf(),tempCard.copyOf())){
+                HIGH -> ary[0]++;
                 ONE_PAIR -> ary[1]++
                 TWO_PAIR -> ary[2]++
                 TRIPLE -> ary[3]++
@@ -79,17 +89,27 @@ class CardViewModel : ViewModel() {
                 ST_FLUSH -> ary[10]++
                 BACK_ST_FL -> ary[11]++
                 ROYAL_ST_FL -> ary[12]++
+                else -> Log.i("ErrorLog??", "fsafsadfsadfsdafsdafsadd")
             }
         }
-        Log.i("ErrorLog??", "complete for")
-        _probability.value=isRate(ary, i)
+        Log.i("ErrorLog??", "ccc${ary[0]}")
+        Log.i("ErrorLog??", "ccc${ary[1]}")
+        Log.i("ErrorLog??", "ccc${ary[2]}")
+        Log.i("ErrorLog??", "ccc${ary[3]}")
+        Log.i("ErrorLog??", "ccc${ary[4]}")
+        Log.i("ErrorLog??", "ccc${ary[5]}")
+        _probability.value=isRate(ary.copyOf())
+        Log.i("ErrorLog??", "${_probability.value!![2]}")
         return
     }
-    private fun isRate(ary : IntArray, time : Int) : DoubleArray{
+    private fun isRate(ary : IntArray) : DoubleArray{
+//        Log.i("ErrorLog??", "start double ${ary[2]} time ${time}")
         var temp= DoubleArray(13){0.0}
         for(j in 0..12){
-            temp[j]= (ary[j]/time).toDouble()
+            temp[j]= ary[j].toDouble()/_times.value!!.toDouble()
+            Log.i("ErrorLog??", "calcul result ${temp[j]}")
         }
+        Log.i("ErrorLog??", "result ${temp[2]}")
         return temp
     }
 
@@ -98,6 +118,7 @@ class CardViewModel : ViewModel() {
         var result : String
         val cardNum= Normalization(13, 0, p_cardNum)
         val cardShape= Normalization(13, 1, p_cardShape)
+        Log.i("ErrorLog??", "in judge card${p_cardNum[2]}")
         result=isOverlap(cardNum)   //숫자 중복 족보 검사 함수
         if(result == NONE){
             result=isAnother(cardShape, cardNum)   //나머지 족보 판별 함수
