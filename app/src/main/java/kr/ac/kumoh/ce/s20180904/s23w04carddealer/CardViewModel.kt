@@ -60,7 +60,6 @@ class CardViewModel : ViewModel() {
     }
 
     fun simulate(){
-        Log.i("ErrorLog??", "init simulate")
         var ary=IntArray(13){0}
         var tempCard = IntArray(5){0}
         var temp : Int
@@ -72,9 +71,6 @@ class CardViewModel : ViewModel() {
                 } while (tempCard.contains(temp))
                 tempCard[i] = temp
             }
-            Log.i("ErrorLog??", "aaa${tempCard[2]}")
-//            temp_1=judgeCard(tempCard.copyOf(),tempCard.copyOf())
-//            Log.i("ErrorLog??", "aaa${temp_1}")
             when(judgeCard(tempCard.copyOf(),tempCard.copyOf())){
                 HIGH -> ary[0]++;
                 ONE_PAIR -> ary[1]++
@@ -89,17 +85,10 @@ class CardViewModel : ViewModel() {
                 ST_FLUSH -> ary[10]++
                 BACK_ST_FL -> ary[11]++
                 ROYAL_ST_FL -> ary[12]++
-                else -> Log.i("ErrorLog??", "fsafsadfsadfsdafsdafsadd")
+                else -> return
             }
         }
-        Log.i("ErrorLog??", "ccc${ary[0]}")
-        Log.i("ErrorLog??", "ccc${ary[1]}")
-        Log.i("ErrorLog??", "ccc${ary[2]}")
-        Log.i("ErrorLog??", "ccc${ary[3]}")
-        Log.i("ErrorLog??", "ccc${ary[4]}")
-        Log.i("ErrorLog??", "ccc${ary[5]}")
         _probability.value=isRate(ary.copyOf())
-        Log.i("ErrorLog??", "${_probability.value!![2]}")
         return
     }
     private fun isRate(ary : IntArray) : DoubleArray{
@@ -107,9 +96,7 @@ class CardViewModel : ViewModel() {
         var temp= DoubleArray(13){0.0}
         for(j in 0..12){
             temp[j]= ary[j].toDouble()/_times.value!!.toDouble()
-            Log.i("ErrorLog??", "calcul result ${temp[j]}")
         }
-        Log.i("ErrorLog??", "result ${temp[2]}")
         return temp
     }
 
@@ -118,7 +105,6 @@ class CardViewModel : ViewModel() {
         var result : String
         val cardNum= Normalization(13, 0, p_cardNum)
         val cardShape= Normalization(13, 1, p_cardShape)
-        Log.i("ErrorLog??", "in judge card${p_cardNum[2]}")
         result=isOverlap(cardNum)   //숫자 중복 족보 검사 함수
         if(result == NONE){
             result=isAnother(cardShape, cardNum)   //나머지 족보 판별 함수
