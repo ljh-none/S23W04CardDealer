@@ -3,6 +3,7 @@ package kr.ac.kumoh.ce.s20180904.s23w04carddealer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import kr.ac.kumoh.ce.s20180904.s23w04carddealer.databinding.ActivitySecondBinding
 
@@ -14,9 +15,10 @@ class SecondActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         main=ActivitySecondBinding.inflate(layoutInflater)
         model= ViewModelProvider(this)[CardViewModel::class.java]
+        model.probability.observe(this, Observer{setDefaultText(); addText();})
         txtAry= arrayOf(main.txt1, main.txt2, main.txt3, main.txt4,main.txt5,main.txt6,
             main.txt7,main.txt8,main.txt9,main.txt10,main.txt11,main.txt12,main.txt13)
-        setText()
+        setDefaultText()
         setContentView(main.root)
 
         main.btnSimul!!.setOnClickListener{
@@ -24,15 +26,10 @@ class SecondActivity : AppCompatActivity() {
                 return@setOnClickListener
             model.times.value=main.edit?.text.toString().toInt()
             model.simulate()
-            setText()
-            var temp=model.probability.value!!
-           for(i in 0..12){
-               txtAry[i]!!.text =txtAry[i]!!.text.toString() + temp[i].toString()
-           }
         }
     }
 
-    fun setText(){
+    fun setDefaultText(){
         for(i in 0..12){
             when(i){
                 0 -> txtAry[i]!!.text = HIGH + " 확률 : "
@@ -50,6 +47,12 @@ class SecondActivity : AppCompatActivity() {
                 12 -> txtAry[i]!!.text = ROYAL_ST_FL + " 확률 : "
                 else -> return
             }
+        }
+    }
+    fun addText(){
+        var temp=model.probability.value!!
+        for(i in 0..12){
+            txtAry[i]!!.text =txtAry[i]!!.text.toString() + temp[i].toString()
         }
     }
 }
