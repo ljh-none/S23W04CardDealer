@@ -17,13 +17,6 @@
         android:layout_gravity="center"
     />
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="해당 값들은 반올림에 의해 약간의 오차가 있을 수 있습니다"
-        android:textSize="15dp"
-        android:layout_gravity="center"
-        />
-    <TextView
         android:id="@+id/txt1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
