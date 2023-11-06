@@ -84,7 +84,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="good luck"
+        android:text="셔플"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btn_rate"
 
@@ -97,7 +97,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="Rate"
+        android:text="확률"
         app:layout_constraintStart_toEndOf="@id/btn_shuffle"
         app:layout_constraintEnd_toEndOf="parent"
 

@@ -15,16 +15,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var card_list: Array<ImageView?>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("Lifecycle!!!", "onCreate")
-        //setContentView(R.layout.activity_main)
         main=ActivityMainBinding.inflate(layoutInflater)
-        setContentView(main.root)
-
         card_list=arrayOf(main.card1, main.card2, main.card3, main.card4, main.card5)
-
         model= ViewModelProvider(this)[CardViewModel::class.java]
         model.cards.observe(this, Observer { SetCard() })
         model.ranks.observe(this,{main.text.text=model.ranks.value!!})  //화면 회전 시 족보 유지
+
+        setContentView(main.root)
 
         main.btnShuffle.setOnClickListener{
             model.generateCard()
@@ -34,7 +31,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
     private fun SetCard(){
         var temp = 0
         for(i in 0 until 5){
@@ -72,30 +68,6 @@ class MainActivity : AppCompatActivity() {
             return "c_black_joker"
         else
             return "c_${num}_of_${shape}"
-    }
-    override fun onStart() {
-        super.onStart()
-        Log.i("Lifecycle!!!", "onStart")
-    }
-    override fun onResume() {
-        super.onResume()
-        Log.i("Lifecycle!!!", "onResume")
-    }
-    override fun onPause() {
-        super.onPause()
-        Log.i("Lifecycle!!!", "onPause")
-    }
-    override fun onStop() {
-        super.onStop()
-        Log.i("Lifecycle!!!", "onStop")
-    }
-    override fun onRestart() {
-        super.onRestart()
-        Log.i("Lifecycle!!!", "onRestart")
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.i("Lifecycle!!!", "onDestroy")
     }
 }
 

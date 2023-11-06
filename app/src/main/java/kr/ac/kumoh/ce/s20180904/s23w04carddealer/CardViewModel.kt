@@ -6,7 +6,7 @@ import kotlin.random.Random
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
-//족보값
+//족보값 상수
 const val NONE = "none"
 const val HIGH = "하이카드"
 const val ONE_PAIR = "원 페어"
@@ -23,10 +23,10 @@ const val BACK_ST_FL = "백 스트레이트 플러시"
 const val ROYAL_ST_FL = "로얄 스트레이트 플러시"
 
 class CardViewModel : ViewModel() {
-    private var _cards=MutableLiveData<IntArray>(IntArray(5){-1})
-    private var _ranks = MutableLiveData<String>("족보") //족보값 유지용
-    private var _probability= MutableLiveData<DoubleArray>(DoubleArray(13){0.0})
-    private var _times = MutableLiveData<Int>(0)
+    private var _cards=MutableLiveData<IntArray>(IntArray(5){-1})   //카드 5장
+    private var _ranks = MutableLiveData<String>("족보")  //족보값
+    private var _probability= MutableLiveData<DoubleArray>(DoubleArray(13){0.0}) //각 족보의 확률
+    private var _times = MutableLiveData<Int>(0)    //전달받은 시행 횟수
     val cards: LiveData<IntArray>
         get() = _cards
    val ranks : LiveData<String>
@@ -38,40 +38,17 @@ class CardViewModel : ViewModel() {
         set(value){
             _times.value = value.value
         }
-
-    fun generateCard(){ //기존 5장 생성 기능에 족보 판단 함수 추가
-//        이하 주석은 검증용 카드
-//        var tempCard = intArrayOf(51, 50, 49, 48, 47) //로플검증
-//        var tempCard = intArrayOf(26, 27, 36, 37, 38) //스플검증
-//        var tempCard = intArrayOf(5, 3, 16, 29, 42) //포카검증
-//        var tempCard = intArrayOf(5, 18, 31, 6, 19) //풀하검증
-//        var tempCard = intArrayOf(40, 42, 44, 45, 50) //플러검즏
-//        var tempCard = intArrayOf(15, 29, 4, 31, 32)   //스트검증
-        var temp : Int
-        val tempCard = IntArray(5){0}
-        for (i in tempCard.indices) {
-            do {
-                temp = Random.nextInt(0, 52)
-            } while (tempCard.contains(temp))
-            tempCard[i] = temp
-        }
-        _cards.value=tempCard
-        judgeCard(_cards.value!!.copyOf(),_cards.value!!.copyOf()) //족보 판단 함수
+    fun generateCard(){ //셔플 버튼 클릭 시 실행되는 함수
+        _cards.value=shuffleCard() //카드 랜덤 생성
+        judgeCard(_cards.value!!.copyOf(),_cards.value!!.copyOf()) //족보 판단
     }
+    fun simulate(){ //시뮬레이션 버튼 클릭 시 실행되는 함수
+        var ary=IntArray(13){0} //각 족보 별 출현 횟수 저장
+        var tempCard : IntArray
 
-    fun simulate(){
-        var ary=IntArray(13){0}
-        var tempCard = IntArray(5){0}
-        var temp : Int
-
-        for (j in 1.._times.value!!){
-            for (i in tempCard.indices) {
-                do {
-                    temp = Random.nextInt(0, 52)
-                } while (tempCard.contains(temp))
-                tempCard[i] = temp
-            }
-            when(judgeCard(tempCard.copyOf(),tempCard.copyOf())){
+        for (j in 1.._times.value!!){   //시행횟수동안 loop
+            tempCard=shuffleCard() //카드 랜덤 생성
+            when(judgeCard(tempCard.copyOf(),tempCard.copyOf())){   //출현 횟수 기재
                 HIGH -> ary[0]++;
                 ONE_PAIR -> ary[1]++
                 TWO_PAIR -> ary[2]++
@@ -88,18 +65,27 @@ class CardViewModel : ViewModel() {
                 else -> return
             }
         }
-        _probability.value=isRate(ary.copyOf())
+        _probability.value=isRate(ary.copyOf()) //확률 계산 함수
         return
     }
-    private fun isRate(ary : IntArray) : DoubleArray{
-//        Log.i("ErrorLog??", "start double ${ary[2]} time ${time}")
+    private fun shuffleCard() : IntArray{ //카드 랜덤 생성 함수
+        var temp : Int
+        val tempCard = IntArray(5){0}
+        for (i in tempCard.indices) {
+            do {
+                temp = Random.nextInt(0, 52)
+            } while (tempCard.contains(temp))
+            tempCard[i] = temp
+        }
+        return tempCard
+    }
+    private fun isRate(ary : IntArray) : DoubleArray{   //확률 계산 함수
         var temp= DoubleArray(13){0.0}
         for(j in 0..12){
             temp[j]= ary[j].toDouble()/_times.value!!.toDouble()
         }
         return temp
     }
-
     private fun judgeCard(p_cardNum : IntArray, p_cardShape : IntArray) : String{    //족보 판단 함수
         // oper -> 0 모듈러(카드넘버), 1 -> 나눗셈(카드모양)
         var result : String
@@ -162,7 +148,7 @@ class CardViewModel : ViewModel() {
         var count = 0
         temp.sort() //이 함수에서의 스트레이트 검사는 정렬이 필수
 
-        if(temp[0] == 0 && temp[4] == 12){  //ace와 king이 같이 나왔을 때
+        if(temp[0] == 0 && temp[4] == 12){  //ace와 king이 같이 나왔을 경우에 스트레이트인지 검사.
             for(i in 0..3){ //순전파
                 if(temp[i+1] - temp[i] == 1) count += 1
                 else break
@@ -183,7 +169,6 @@ class CardViewModel : ViewModel() {
         }
         return false
     }
-
     private fun Normalization(div : Int, oper : Int, temp : IntArray) : IntArray{
         //정규화 함수. oper : 0 -> 모듈러(카드넘버), 1 -> 나눗셈(카드모양)
         if(oper == 0) {
